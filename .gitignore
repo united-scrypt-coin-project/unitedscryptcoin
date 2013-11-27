@@ -1,7 +1,7 @@
 src/*.exe
-src/litecoin
-src/litecoind
-src/test_litecoin
+src/unitedscryptcoin
+src/unitedscryptcoind
+src/test_unitedscryptcoin
 .*.swp
 *.*~*
 *.bak
@@ -9,17 +9,17 @@ src/test_litecoin
 *.orig
 *.o
 *.patch
-.litecoin
+.unitedscryptcoin
 
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-litecoin-qt
-Litecoin-Qt.app
+unitedscryptcoin-qt
+UnitedScryptCoin-Qt.app
 
 # Unit-tests
 Makefile.test
-litecoin-qt_test
+unitedscrpyptcoin-qt_test
 
 # Resources cpp
 qrc_*.cpp
