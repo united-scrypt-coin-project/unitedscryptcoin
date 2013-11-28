@@ -79,7 +79,7 @@ bool fServer = false;
 bool fCommandLine = false;
 string strMiscWarning;
 bool fTestNet = false;
-bool fBloomFilters = false;
+bool fBloomFilters = true;
 bool fNoListen = false;
 bool fLogTimestamps = false;
 CMedianFilter<int64> vTimeOffsets(200,0);
@@ -1119,6 +1119,7 @@ boost::filesystem::path GetPidFile()
     return pathPidFile;
 }
 
+#ifndef WIN32
 void CreatePidFile(const boost::filesystem::path &path, pid_t pid)
 {
     FILE* file = fopen(path.string().c_str(), "w");
@@ -1128,6 +1129,7 @@ void CreatePidFile(const boost::filesystem::path &path, pid_t pid)
         fclose(file);
     }
 }
+#endif
 
 bool RenameOver(boost::filesystem::path src, boost::filesystem::path dest)
 {
@@ -1148,6 +1150,8 @@ void FileCommit(FILE *fileout)
 #else
     #if defined(__linux__) || defined(__NetBSD__)
     fdatasync(fileno(fileout));
+    #elif defined(__APPLE__) && defined(F_FULLFSYNC)
+    fcntl(fileno(fileout), F_FULLFSYNC, 0);
     #else
     fsync(fileno(fileout));
     #endif
