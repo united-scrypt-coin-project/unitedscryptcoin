@@ -32,7 +32,7 @@ CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
-uint256 hashGenesisBlock("0x12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2");
+uint256 hashGenesisBlock("0x89a47c0df0ab17773b26d2f03a480eb2a11bc022e83e611ca14b88428e0f4252");
 static CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // UnitedScryptCoin: starting difficulty is 1 / 2^12
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -2795,7 +2795,7 @@ bool LoadBlockIndex()
         pchMessageStart[1] = 0xc1;
         pchMessageStart[2] = 0xb7;
         pchMessageStart[3] = 0xdc;
-        hashGenesisBlock = uint256("0xf5ae71e26c74beacc88382716aced69cddf3dffff24f384e1808905e0188f68f");
+        hashGenesisBlock = uint256("0xb92bc49428b600d337b78489b252a8f42b41d4aafcd220b022236444a9bd0b2a");
     }
 
     //
@@ -2820,12 +2820,18 @@ bool InitBlockIndex() {
 
     // Only add the genesis block if not reindexing (in which case we reuse the one already on disk)
     if (!fReindex) {
-        // Genesis Block:
-        // CBlock(hash=12a765e31ffd4059bada, PoW=0000050c34a64b415b6b, ver=1, hashPrevBlock=00000000000000000000, hashMerkleRoot=97ddfbbae6, nTime=1317972665, nBits=1e0ffff0, nNonce=2084524493, vtx=1)
-        //   CTransaction(hash=97ddfbbae6, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-        //     CTxIn(COutPoint(0000000000, -1), coinbase 04ffff001d0104404e592054696d65732030352f4f63742f32303131205374657665204a6f62732c204170706c65e280997320566973696f6e6172792c2044696573206174203536)
-        //     CTxOut(nValue=50.00000000, scriptPubKey=040184710fa689ad5023690c80f3a4)
-        //   vMerkleTree: 97ddfbbae6
+        // UnitedScryptCoin Genesis Block:
+        // CBlock(hash=89a47c0df0ab17773b26d2f03a480eb2a11bc022e83e611ca14b88428e0f4252,
+        //      PoW=000008c4ab357d9eae69b252b0b3bd90e3d414372442774806d9a6e80a9778b6,
+        //      ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000,
+        //      hashMerkleRoot=f7585b5ce116156d39dabe4a7cd9fb15b0f3b39200bcdf3bd98ee06b1c84cad0,
+        //      nTime=1385836560, nBits=1e0ffff0, nNonce=958772, vtx=1)
+        //  CTransaction(hash=f7585b5ce116156d39dabe4a7cd9fb15b0f3b39200bcdf3bd98ee06b1c84cad0,
+        //          ver=1, vin.size=1, vout.size=1, nLockTime=0)
+        //      CTxIn(COutPoint(0000000000000000000000000000000000000000000000000000000000000000,
+        //                      4294967295),
+        //              coinbase 04ffff001d01044c504c652046696761726f20323031332f31312f33302031393a33362043455420437576696c6c6965722072656c61746976697365206c61206d6f62696c69736174696f6e2064657320726f757469657273)
+        //      CTxOut(nValue=50.00000000, scriptPubKey=040184710fa689ad5023690c80f3a4)
 
         // Genesis block
         const char* pszTimestamp = "Le Figaro 2013/11/30 19:36 CET Cuvillier relativise la mobilisation des routiers";
@@ -2842,12 +2848,12 @@ bool InitBlockIndex() {
         block.nVersion = 1;
         block.nTime    = 1385836560;
         block.nBits    = 0x1e0ffff0;
-        block.nNonce   = 0;
+        block.nNonce   = 958772;
 
         if (fTestNet)
         {
             block.nTime    = 1385836559;
-            block.nNonce   = 0;
+            block.nNonce   = 72962;
         }
 
         //// debug print
