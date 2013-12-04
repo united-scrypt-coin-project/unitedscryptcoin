@@ -15,22 +15,9 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, Object& entry);
 
 void ScriptPubKeyToJSON(const CScript& scriptPubKey, Object& out);
 
-double GetDifficulty(const CBlockIndex* blockindex)
-{
-    // Floating point number that is a multiple of the minimum difficulty,
-    // minimum difficulty = 1.0.
-    if (blockindex == NULL)
-    {
-        if (pindexBest == NULL)
-            return 1.0;
-        else
-            blockindex = pindexBest;
-    }
-
-    int nShift = (blockindex->nBits >> 24) & 0xff;
-
-    double dDiff =
-        (double)0x0000ffff / (double)(blockindex->nBits & 0x00ffffff);
+double GetDifficultyHelper(unsigned int nBits) {
+    int nShift = (nBits >> 24) & 0xff;
+    double dDiff = (double)0x0000ffff / (double)(nBits & 0x00ffffff);
 
     while (nShift < 29)
     {
@@ -46,11 +33,27 @@ double GetDifficulty(const CBlockIndex* blockindex)
     return dDiff;
 }
 
+double GetDifficulty(const CBlockIndex* blockindex)
+{
+    // Floating point number that is a multiple of the minimum difficulty,
+    // minimum difficulty = 1.0.
+    if (blockindex == NULL)
+    {
+        if (pindexBest == NULL)
+            return 1.0;
+        else
+            blockindex = pindexBest;
+    }
+
+    return GetDifficultyHelper(blockindex->nBits);
+}
+
 
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex)
 {
     Object result;
     result.push_back(Pair("hash", block.GetHash().GetHex()));
+    result.push_back(Pair("pow_hash", block.GetPoWHash().GetHex()));
     CMerkleTx txGen(block.vtx[0]);
     txGen.SetMerkleBranch(&block);
     result.push_back(Pair("confirmations", (int)txGen.GetDepthInMainChain()));
@@ -81,11 +84,13 @@ Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex)
 
         Object parent_block;
         parent_block.push_back(Pair("hash", block.auxpow->parentBlockHeader.GetHash().GetHex()));
+        parent_block.push_back(Pair("pow_hash", block.auxpow->parentBlockHeader.GetPoWHash().GetHex()));
         parent_block.push_back(Pair("version", (boost::uint64_t)block.auxpow->parentBlockHeader.nVersion));
         parent_block.push_back(Pair("previousblockhash", block.auxpow->parentBlockHeader.hashPrevBlock.GetHex()));
         parent_block.push_back(Pair("merkleroot", block.auxpow->parentBlockHeader.hashMerkleRoot.GetHex()));
         parent_block.push_back(Pair("time", (boost::int64_t)block.auxpow->parentBlockHeader.nTime));
         parent_block.push_back(Pair("bits", HexBits(block.auxpow->parentBlockHeader.nBits)));
+	parent_block.push_back(Pair("difficulty", GetDifficultyHelper(block.auxpow->parentBlockHeader.nBits)));
         parent_block.push_back(Pair("nonce", (boost::uint64_t)block.auxpow->parentBlockHeader.nNonce));
         auxpow.push_back(Pair("parent_block", Value(parent_block)));
         result.push_back(Pair("auxpow", Value(auxpow)));
